@@ -1,0 +1,16 @@
+.my-custom-scrollbar {
+  position: relative;
+  max-height: 600px;
+  overflow: auto;
+}
+.table-wrapper-scroll-y {
+  display: block;
+}
+
+tr:hover {
+  background-color: rgba(0, 17, 255, 0.452);
+}
+
+h3 {
+  background-color: rgb(0, 255, 255);
+}

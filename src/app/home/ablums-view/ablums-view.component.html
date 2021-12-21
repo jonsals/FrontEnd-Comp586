@@ -1,0 +1,23 @@
+<h3>{{ artistInt }}</h3>
+<div class="list-group">
+  <button
+    type="button"
+    class="
+      list-group-item list-group-item-action
+      disabled
+      bg-primary
+      text-light
+    "
+  >
+    Albums
+  </button>
+  <div *ngFor="let displayAlbum of displayAlbum">
+    <button
+      (click)="selectedAlbum(displayAlbum.id)"
+      type="button"
+      class="list-group-item list-group-item-action"
+    >
+      {{ displayAlbum.name }}
+    </button>
+  </div>
+</div>

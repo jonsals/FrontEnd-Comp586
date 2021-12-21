@@ -1,0 +1,15 @@
+<ul
+  class="list-group list-group-flush"
+  *ngFor="let personDetails of personDetails"
+>
+  <li class="list-group-item">
+    <div class="row">
+      <div class="col">
+        {{ personDetails.id }}--{{ personDetails.favoriteFood }}
+        <button class="btn-sm btn-info float-end">Update</button>
+        <button class="btn-sm btn-success float-end">AddSong</button>
+        <button class="btn-sm btn-danger float-end">Delete</button>
+      </div>
+    </div>
+  </li>
+</ul>

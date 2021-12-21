@@ -1,0 +1,28 @@
+<div class="container-fluid">
+  <div>
+    <h1>Album Image</h1>
+    <h1>Number of song</h1>
+  </div>
+  <table class="table">
+    <thead class="thead-dark bg-dark">
+      <tr class="text-light">
+        <th scope="col">Song #</th>
+        <th scope="col">First</th>
+        <th scope="col">Duration</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let songDisplay of songDisplay; let i = index">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ songDisplay.songName }}</td>
+        <td>{{ songDisplay.minute }}min</td>
+        <td>{{ songDisplay.seconds }}sec</td>
+      </tr>
+    </tbody>
+  </table>
+  <br />
+  <br />
+  <br />
+  <br />
+</div>

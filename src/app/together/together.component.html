@@ -1,0 +1,518 @@
+<!-- <h1>
+  Parent page <span>{{ displayId }}</span>
+  <span>--{{ displayAlbumId }}</span>
+</h1> -->
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-6">
+      <h1>Artist Selected: {{ ArtistSelected }}</h1>
+    </div>
+    <div class="col-6">
+      <h1>Album Selected: {{ AlbumSelected }}</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h3 class="text-center">
+        Artist
+        <button
+          class="btn btn-success float-end"
+          data-toggle="modal"
+          data-target="#CreateNewArtist"
+          data-backdrop="static"
+        >
+          Add Artist
+        </button>
+      </h3>
+
+      <div class="table-wrapper-scroll-y my-custom-scrollbar">
+        <table class="table table-bordered table-striped mb-0">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Artist</th>
+              <th scope="col">Genre</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let artistInfo of artistInfo"
+              (click)="getArtistId(artistInfo.artistId, artistInfo.name)"
+            >
+              <th scope="row">
+                <img style="height: 100px" src="{{ artistInfo.imageUrl }}" />
+              </th>
+              <td>ID:{{ artistInfo.artistId }}</td>
+              <td>Name:{{ artistInfo.name }}</td>
+              <td>
+                <button
+                  *ngIf="showDeleteOption"
+                  (click)="deleteThisArtist(artistInfo.artistId)"
+                  class="btn-sm btn-danger"
+                >
+                  Delete
+                </button>
+                <button
+                  data-toggle="modal"
+                  data-target="#CreateNewArtist"
+                  (click)="EditArtistButton(artistInfo.artistId)"
+                  class="btn-sm btn-info mt-3"
+                >
+                  Update
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col">
+      <h3 class="text-center">
+        Albums<button
+          data-backdrop="static"
+          data-toggle="modal"
+          data-target="#CreateNewAlbum"
+          data-backdrop="static"
+          *ngIf="displayId > 0"
+          class="btn btn-success float-end"
+        >
+          Add Album
+        </button>
+      </h3>
+
+      <div class="table-wrapper-scroll-y my-custom-scrollbar">
+        <table class="table table-bordered table-striped mb-0">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">First</th>
+              <th scope="col">Last</th>
+              <th scope="col">PersonId</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="notEmpty; else elseBlock">
+            <tr
+              id="albumRow{{ displayAlbum.id }}"
+              *ngFor="let displayAlbum of displayAlbum"
+              (click)="AlbumIdChange(displayAlbum.id, displayAlbum.name)"
+            >
+              <th scope="row">1</th>
+              <td>ID:{{ displayAlbum.id }}</td>
+              <td>{{ displayAlbum.name }}</td>
+              <td>
+                <button
+                  (click)="DeleteAlbum(displayAlbum.id)"
+                  class="btn-sm btn-danger"
+                >
+                  Delete
+                </button>
+                <button
+                  data-toggle="modal"
+                  data-target="#CreateNewAlbum"
+                  (click)="EditAlbumButton(displayAlbum.id)"
+                  class="btn-sm btn-info mt-3"
+                >
+                  Update
+                </button>
+              </td>
+            </tr>
+          </tbody>
+
+          <ng-template #elseBlock>
+            <tr>
+              <td></td>
+              <td class="text-center">No</td>
+              <td class="text-center">Result</td>
+              <td></td>
+            </tr>
+          </ng-template>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <h3 class="text-center">
+        Songs<button
+          data-toggle="modal"
+          data-target="#CreateNewSong"
+          data-backdrop="static"
+          *ngIf="displayAlbumId > 0"
+          class="btn btn-success float-end"
+        >
+          Add Song
+        </button>
+      </h3>
+
+      <div class="table-wrapper-scroll-y my-custom-scrollbar">
+        <table class="table table-bordered table-striped mb-0">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">First</th>
+              <th scope="col">Last</th>
+              <th scope="col">Handle</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="songNotEmpty; else elseBlock">
+            <tr *ngFor="let songDisplay of songDisplay">
+              <th scope="row">1</th>
+              <td>{{ songDisplay.songName }}</td>
+              <td>{{ songDisplay.songId }}</td>
+              <td>
+                <button
+                  class="btn-sm btn-danger"
+                  (click)="DeleteSong(songDisplay.songId)"
+                >
+                  Delete
+                </button>
+                <button
+                  data-toggle="modal"
+                  data-target="#CreateNewSong"
+                  (click)="EditSongButton(songDisplay.songId)"
+                  class="btn-sm btn-info mt-3"
+                >
+                  Update
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <ng-template #elseBlock>
+            <tr>
+              <td></td>
+              <td class="text-center">No</td>
+              <td class="text-center">Result</td>
+              <td></td>
+            </tr>
+          </ng-template>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Artist Model -------------------------------------------------------------------------------------------->
+<div
+  class="modal fade"
+  id="CreateNewArtist"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Person</h5>
+        <button
+          id="exitArtist"
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="changeToFalse()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form>
+        <div class="modal-body">
+          <form [formGroup]="ArtistFormGroup">
+            <!-- --------------------------Create form---------------------------------------- -->
+            <img
+              id="updateArtist"
+              style="width: 100px; height: 100px"
+              src="{{ ArtistObj.imageUrl }}"
+            />
+            <div class="form-group">
+              <label for="exampleInputEmail1">First Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-control"
+                formControlName="name"
+                placeholder="Enter name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Genre</label>
+              <input
+                type="lastName"
+                id="lastName"
+                name="lastName"
+                formControlName="genre"
+                class="form-control"
+                placeholder="Enter Genre"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">File Upload</label>
+              <input
+                type="file"
+                id="name"
+                name="name"
+                class="form-control"
+                formControlName="imageFile"
+                placeholder="Enter name"
+                (change)="inputFileArtist($event)"
+              />
+            </div>
+          </form>
+          <!-- --------------------------Create form---------------------------------------- -->
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+            id="cancelAddPerson"
+          >
+            Close
+          </button>
+          <button
+            *ngIf="!updating; else updateingArtist"
+            type="submit"
+            (click)="addArtist()"
+            class="btn btn-primary"
+          >
+            Add
+          </button>
+
+          <ng-template #updateingArtist>
+            <button
+              *ngIf="updating"
+              type="submit"
+              (click)="addArtist()"
+              class="btn btn-primary"
+            >
+              Update
+            </button>
+          </ng-template>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Add Album Model -------------------------------------------------------------------------------------------->
+<div
+  class="modal fade"
+  id="CreateNewAlbum"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Album</h5>
+        <button
+          id="exitAlbum"
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="changeToFalse()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form>
+        <div class="modal-body">
+          <form [formGroup]="AlbumFormGroup">
+            <!-- --------------------------Create form---------------------------------------- -->
+            <img
+              id="updateAlbum"
+              style="width: 100px; height: 100px"
+              src="{{ AlbumObj.imageUrl }}"
+            />
+            <div class="form-group">
+              <label for="exampleInputEmail1">File Upload</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-control"
+                formControlName="imageUrl"
+                (change)="inputFileAlbum($event)"
+                placeholder="https://example.com"
+                pattern="https://.*"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Album Name</label>
+              <input
+                type="text"
+                id="albumName"
+                name="albumName"
+                class="form-control"
+                formControlName="albumName"
+                placeholder="Enter name"
+              />
+            </div>
+            <div class="form-group col-6">
+              <label for="exampleInputPassword1">Price</label>
+              <input
+                type="number"
+                id="number"
+                name="number"
+                formControlName="regularPrice"
+                class="form-control"
+                placeholder="Enter Genre"
+                required
+              />
+            </div>
+            <div class="form-group col-6">
+              <label for="exampleInputPassword1"># of Songs</label>
+              <input
+                type="number"
+                id="number"
+                name="number"
+                formControlName="totalNumberOfSongs"
+                class="form-control"
+                placeholder="Enter Genre"
+                required
+              />
+            </div>
+          </form>
+          <!-- --------------------------Create form---------------------------------------- -->
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+            id="cancelAddPerson"
+          >
+            Close
+          </button>
+          <button
+            *ngIf="!updating; else updateingAlbum"
+            type="submit"
+            (click)="postAlbum()"
+            class="btn btn-primary"
+          >
+            Add
+          </button>
+
+          <ng-template #updateingAlbum>
+            <button
+              *ngIf="updating"
+              type="submit"
+              class="btn btn-primary"
+              (click)="updateAlbum()"
+            >
+              Update
+            </button>
+          </ng-template>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Add Song Model -------------------------------------------------------------------------------------------->
+<div
+  class="modal fade"
+  id="CreateNewSong"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Song</h5>
+        <button
+          id="exitSong"
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="changeToFalse()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form>
+        <div class="modal-body">
+          <form [formGroup]="SongFormGroup">
+            <!-- --------------------------Create form---------------------------------------- -->
+            <div class="form-group">
+              <label for="exampleInputEmail1">Song Name</label>
+              <input
+                type="text"
+                id="songName"
+                name="songName"
+                class="form-control"
+                formControlName="songName"
+                placeholder="Enter name"
+              />
+            </div>
+            <div class="row">
+              <div class="form-group col-3">
+                <label for="exampleInputPassword1">Minute</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="60"
+                  id="number"
+                  name="number"
+                  formControlName="minute"
+                  class="form-control"
+                  placeholder="Enter Genre"
+                  required
+                />
+              </div>
+              <div class="form-group col-3">
+                <label for="exampleInputPassword1">Seconds</label>
+                <input
+                  type="number"
+                  id="number"
+                  name="number"
+                  min="0"
+                  max="60"
+                  formControlName="seconds"
+                  class="form-control"
+                  placeholder="Enter Genre"
+                  required
+                />
+              </div>
+            </div>
+          </form>
+          <!-- --------------------------Create form---------------------------------------- -->
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+            id="cancelAddPerson"
+          >
+            Close
+          </button>
+          <button
+            *ngIf="!updating; else updatingSong"
+            type="submit"
+            (click)="postSong()"
+            class="btn btn-primary"
+          >
+            Add
+          </button>
+
+          <ng-template #updatingSong>
+            <button *ngIf="updating" type="submit" class="btn btn-primary">
+              Update
+            </button>
+          </ng-template>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
