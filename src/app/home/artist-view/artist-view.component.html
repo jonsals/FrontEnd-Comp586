@@ -1,0 +1,29 @@
+<div class="container-fluid">
+  <div *ngFor="let artistInfo of artistInfo" class="mb-5">
+    <div class="row">
+      <div class="col-3">
+        <div class="card" (click)="onClick(artistInfo.artistId)">
+          <div class="card-body">
+            <h5 class="card-title">{{ artistInfo.name }}</h5>
+            <div class="row">
+              <div class="col">
+                <p>Some image</p>
+                <img
+                  style="width: 200px; height: 200px"
+                  src="{{ artistInfo.imageUrl }}"
+                  class="card-img-top"
+                  alt="..."
+                />
+              </div>
+            </div>
+            <p class="card-text">
+              Some quick example text to build on the card title and make up the
+              bulk of the card's content.
+            </p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
